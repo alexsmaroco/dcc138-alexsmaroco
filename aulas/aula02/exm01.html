@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EXM01</title>
+</head>
+<body>
+    <h1>Exemplo 01</h1>
+    <canvas></canvas>
+
+    <script>
+        var canvas = document.querySelector("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width = 300;
+        canvas.height = 300;
+
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = "4";
+        ctx.strokeRect(canvas.width/3-10, canvas.height/3-30, 130, 40);
+        
+        ctx.fillStyle = "red";
+        ctx.fillRect(canvas.width/3-10, canvas.height/3-30, 130,40);
+
+        ctx.fillStyle = "white";
+        ctx.font = "bold 20px Arial";
+        ctx.fillText("Hello world", canvas.width/3,canvas.height/3);
+    </script>
+
+</body>
+</html>
