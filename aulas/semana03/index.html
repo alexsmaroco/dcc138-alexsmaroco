@@ -10,7 +10,21 @@
     <h1>Semana 03</h1>
     <canvas/>
     <script>
-    
+        var canvas = document.querySelector("canvas");
+        canvas.width = 400;
+        canvas.height = 300;
+        var dt = 0;
+        var anterior = 0;
+        var ctx = canvas.getContext("2d");
+
+        var pc = new Sprite();
+        
+
+        ctx.fillStyle = "tan";
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+
+        pc.desenhar(ctx);
+
     </script>
     
 </body>
