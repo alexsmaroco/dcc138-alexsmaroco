@@ -1,13 +1,21 @@
-function Sprite() {
-    this.x = 0;
-    this.y = 0;
-    this.vx = 0;
-    this.vy = 0;
-    this.w = 20;
-    this.h = 20;
+function Sprite(params) {
+    var {
+        x = 0,
+        y = 0,
+        vx = 0,
+        vy = 0,
+        w = 20,
+        h = 20
+    } = params;
+    this.x = x;
+    this.y = y;
+    this.vx = vx;
+    this.vy = vy;
+    this.w = w;
+    this.h = h;
 }
 
-Sprite.prototype = new Sprite();
+Sprite.prototype = new Sprite({});
 Sprite.constructor = Sprite;
 
 Sprite.prototype.desenhar = function(ctx) {
@@ -25,4 +33,12 @@ Sprite.prototype.mover = function(dt) {
 Sprite.prototype.perseguir = function() {
     this.vx = 40*Math.sign(alvo.x - this.x);
     this.vy = 40*Math.sign(alvo.y - this.y);
+}
+
+Sprite.prototype.colidiuCom = function(alvo) {
+    if(alvo.x + alvo.w < this.x) return false;
+    if(alvo.x > this.x + this.w) return false;
+    if(alvo.y + alvo.h < this.y) return false;
+    if(alvo.y > this.y + this.h) return false;
+    return true;
 }
