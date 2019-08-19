@@ -38,16 +38,19 @@
         var pc2 = {
             w: 30,
             x: 150,
-            y: 100,
-            vx: 80,
+            y: 50,
+            vx: 0,
             vy: 0,
             desenhar: pc.desenhar,
+            mover : function(dt){
+                this.x = this.x + this.vx*dt;
+                this.y = this.y + this.vy*dt;
+            },
+            perseguir: function(alvo){
+                this.vx = 40*Math.sign(alvo.x - this.x);
+                this.vy = 40*Math.sign(alvo.y - this.y);
+            }
         };
-
-        pc2.mover = function(dt) {
-            this.x = this.x - this.vx * dt;
-            this.y = this.y - this.vy * dt;
-        } 
         
         
         
@@ -93,8 +96,11 @@
             ctx.fillText(t, 10, 10);
             ctx.fillText(dt, 10, 20);
 
+            pc2.perseguir(pc);
+
             pc.mover(dt);
             pc2.mover(dt);
+
             pc.desenhar(ctx);
             pc2.desenhar(ctx);
 
@@ -107,6 +113,7 @@
                 //pcvx = -pcvx;
                 pc.x = canvas.width;
             }
+            
             if (pc2.x >= canvas.width) {
                 //pc.vx = -pcvx;
                 pc2.x = 0 - pc2.w;
@@ -114,6 +121,7 @@
                 //pcvx = -pcvx;
                 pc2.x = canvas.width;
             }
+            
             requestAnimationFrame(passo);
         }
 
