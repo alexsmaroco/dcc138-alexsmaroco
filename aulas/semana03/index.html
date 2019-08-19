@@ -17,7 +17,7 @@
         var anterior = 0;
         var ctx = canvas.getContext("2d");
 
-        var pc = new Sprite({x:10,y:50, vx: 50});
+        var pc = new Sprite({x:10,y:10, vx: 50});
         var pc2 = new Sprite({x:canvas.width-30, y:50, vx: -50});
         var pc3 = new Sprite({x:10,y:10, vy: 50});
         var pc4 = new Sprite({x:10,y:200, vy:-50});
@@ -30,6 +30,7 @@
             ctx.fillStyle = "tan";
             ctx.fillRect(0,0,canvas.width, canvas.height);
             
+            pc2.perseguir(pc);
             pc.mover(dt);
             pc2.mover(dt);
             pc3.mover(dt);

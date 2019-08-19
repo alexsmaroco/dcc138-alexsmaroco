@@ -30,9 +30,9 @@ Sprite.prototype.mover = function(dt) {
     this.y = this.y + this.vy * dt;
 }
 
-Sprite.prototype.perseguir = function() {
-    this.vx = 40*Math.sign(alvo.x - this.x);
-    this.vy = 40*Math.sign(alvo.y - this.y);
+Sprite.prototype.perseguir = function(alvo) {
+    this.vx = 50*Math.sign(alvo.x - this.x);
+    this.vy = 50*Math.sign(alvo.y - this.y);
 }
 
 Sprite.prototype.colidiuCom = function(alvo) {
