@@ -19,11 +19,20 @@
 
         var pc = new Sprite();
         
+        function passo(t) {
+            dt = (t - anterior) / 1000;
+            
+            ctx.fillStyle = "tan";
+            ctx.fillRect(0,0,canvas.width, canvas.height);
+            
+            pc.mover(dt);
+            pc.desenhar(ctx);
 
-        ctx.fillStyle = "tan";
-        ctx.fillRect(0,0,canvas.width, canvas.height);
+            anterior = t;
+            requestAnimationFrame(passo);
+        }
 
-        pc.desenhar(ctx);
+        requestAnimationFrame(passo);
 
     </script>
     
