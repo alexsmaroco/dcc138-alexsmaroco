@@ -16,3 +16,13 @@ Sprite.prototype.desenhar = function(ctx) {
     ctx.strokeStyle = "black";
     ctx.strokeRect(this.x, this.y, this.w, this.h);
 }
+
+Sprite.prototype.mover = function(dt) {
+    this.x = this.x + this.vx * dt;
+    this.y = this.y + this.vy * dt;
+}
+
+Sprite.prototype.perseguir = function() {
+    this.vx = 40*Math.sign(alvo.x - this.x);
+    this.vy = 40*Math.sign(alvo.y - this.y);
+}
