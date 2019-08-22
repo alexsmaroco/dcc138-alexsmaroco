@@ -34,6 +34,8 @@ Sprite.prototype.desenhar = function(ctx) {
 Sprite.prototype.mover = function(dt) {
     if(this.imune > 0)
         this.imune-=dt;
+    if(this.atirando > 0)
+        this.atirando-=dt;
     this.x = this.x + this.vx * dt;
     this.y = this.y + this.vy * dt;
 }
