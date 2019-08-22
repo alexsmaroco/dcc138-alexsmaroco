@@ -47,7 +47,7 @@ Sprite.prototype.colidiuCom = function(alvo) {
 
 Sprite.prototype.controlePorTeclas = function(opcoes) {
     if(opcoes.teclas.esquerda) { this.vx = -50; }
-    if(opcoes.teclas.direita) { this.vx = 50; }
+    else if(opcoes.teclas.direita) { this.vx = 50; } else { this.vx = 0; }
     if(opcoes.teclas.cima) { this.vy = -50; }
-    if(opcoes.teclas.baixo) { this.vy = 50; }
+    else if(opcoes.teclas.baixo) { this.vy = 50; } else { this.vy = 0; }
 }

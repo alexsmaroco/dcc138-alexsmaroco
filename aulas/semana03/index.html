@@ -24,10 +24,11 @@
             baixo: 0
         }
 
-        var pc = new Sprite({x:10,y:10});
+        var pc = new Sprite({x:10,y:20});
 
         var npc = [];
         var NNPC = 3;
+        cont = 0;
         
         for (var i = 0; i < NNPC; i++) {
             npc[i] = new Sprite({
@@ -42,6 +43,9 @@
             
             ctx.fillStyle = "tan";
             ctx.fillRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = "black";
+            ctx.font = "bold 10px Arial";
+            ctx.fillText(cont, 10, 10);
 
             pc.controlePorTeclas({teclas: teclas});
             pc.mover(dt);
@@ -56,6 +60,7 @@
             for (var i = 0; i < npc.length; i++) {
                 npc[i].desenhar(ctx);
                 if(pc.colidiuCom(npc[i])){
+                    cont++;
                     npc[i].x = Math.random()*canvas.width;
                     npc[i].y = Math.random()*canvas.height;
                 }
