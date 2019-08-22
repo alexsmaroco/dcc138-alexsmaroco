@@ -27,14 +27,14 @@
         var pc = new Sprite({x:10,y:20});
 
         var npc = [];
-        var NNPC = 3;
-        cont = 0;
+        var NNPC = 2;
+        pontos = 100;
         
         for (var i = 0; i < NNPC; i++) {
             npc[i] = new Sprite({
                 x: Math.random()*canvas.width,
                 y: Math.random()*canvas.height,
-                color: "rgb("+(i*25)+",0,0)"
+                color: "rgb("+(i*25)+",0,100)"
             });            
         }
 
@@ -43,9 +43,6 @@
             
             ctx.fillStyle = "tan";
             ctx.fillRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "black";
-            ctx.font = "bold 10px Arial";
-            ctx.fillText(cont, 10, 10);
 
             pc.controlePorTeclas({teclas: teclas});
             pc.mover(dt);
@@ -57,19 +54,21 @@
 
             pc.desenhar(ctx);
 
+            
             for (var i = 0; i < npc.length; i++) {
                 npc[i].desenhar(ctx);
-                if(pc.colidiuCom(npc[i])){
-                    cont++;
-                    npc[i].x = Math.random()*canvas.width;
-                    npc[i].y = Math.random()*canvas.height;
-                }
+                if(pc.imune <= 0)
+                    if(pc.colidiuCom(npc[i])) {
+                        pontos--;
+                        pc.imune = 2;
+                        // npc[i].x = Math.random()*canvas.width;
+                        // npc[i].y = Math.random()*canvas.height;
+                    }
             }
 
-            if(pc.colidiuCom(npc)) {
-                npc.x = Math.random()*canvas.width;
-                npc.y = Math.random()*canvas.height;
-            }
+            ctx.fillStyle = "black";
+            ctx.font = "bold 10px Arial";
+            ctx.fillText("Pontos: " + pontos, 5, 10);
 
             anterior = t;
             requestAnimationFrame(passo);
