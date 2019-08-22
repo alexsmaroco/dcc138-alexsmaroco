@@ -17,47 +17,53 @@
         var anterior = 0;
         var ctx = canvas.getContext("2d");
 
-        var pc = new Sprite({x:10,y:10, vx: 50});
-        var pc2 = new Sprite({x:canvas.width-30, y:50, vx: -50});
-        var pc3 = new Sprite({x:10,y:10, vy: 50});
-        var pc4 = new Sprite({x:10,y:200, vy:-50});
-        var pc5 = new Sprite({x:100,y:100, vx: 50, vy: 50});
-        var pc6 = new Sprite({x:200,y:200, vx: -50, vy:-50});
+        var teclas = {
+            esquerda: 0,
+            cima: 0,
+            direita: 0,
+            baixo: 0
+        }
+
+        var pc = new Sprite({x:10,y:10});
+
+        var npc = [];
+        var NNPC = 3;
         
+        for (var i = 0; i < NNPC; i++) {
+            npc[i] = new Sprite({
+                x: Math.random()*canvas.width,
+                y: Math.random()*canvas.height,
+                color: "rgb("+(i*25)+",0,0)"
+            });            
+        }
+
         function passo(t) {
             dt = (t - anterior) / 1000;
             
             ctx.fillStyle = "tan";
             ctx.fillRect(0,0,canvas.width, canvas.height);
-            
-            pc2.perseguir(pc);
+
+            pc.controlePorTeclas({teclas: teclas});
             pc.mover(dt);
-            pc2.mover(dt);
-            pc3.mover(dt);
-            pc4.mover(dt);
-            pc5.mover(dt);
-            pc6.mover(dt);
+
+            for (var i = 0; i < npc.length; i++) {
+                npc[i].perseguir({alvo: pc});
+                npc[i].mover(dt);
+            }
 
             pc.desenhar(ctx);
-            pc2.desenhar(ctx);
-            pc3.desenhar(ctx);
-            pc4.desenhar(ctx);
-            pc5.desenhar(ctx);
-            pc6.desenhar(ctx);
 
-            if(pc.colidiuCom(pc2)) {
-                pc2.x = pc2.x+50;
-                pc.x = pc.x-50;
+            for (var i = 0; i < npc.length; i++) {
+                npc[i].desenhar(ctx);
+                if(pc.colidiuCom(npc[i])){
+                    npc[i].x = Math.random()*canvas.width;
+                    npc[i].y = Math.random()*canvas.height;
+                }
             }
-            if(pc3.colidiuCom(pc4)) {
-                pc3.y = pc3.y-50;
-                pc4.y = pc4.y+50;
-            }
-            if(pc5.colidiuCom(pc6)) {
-                pc5.x = 100;
-                pc5.y = 100;
-                pc6.x = 200;
-                pc6.y = 200;
+
+            if(pc.colidiuCom(npc)) {
+                npc.x = Math.random()*canvas.width;
+                npc.y = Math.random()*canvas.height;
             }
 
             anterior = t;
@@ -65,7 +71,39 @@
         }
 
         requestAnimationFrame(passo);
-
+        
+        addEventListener("keydown", function(e) {
+            switch(e.keyCode) {
+                case 37:
+                    teclas.esquerda = 1;
+                    break;
+                case 38:
+                    teclas.cima = 1;
+                    break;
+                case 39:
+                    teclas.direita = 1;
+                    break;
+                case 40:
+                    teclas.baixo = 1;
+                    break;
+            }
+        });
+        addEventListener("keyup", function(e) {
+            switch(e.keyCode) {
+                case 37:
+                    teclas.esquerda = 0;
+                    break;
+                case 38:
+                    teclas.cima = 0;
+                    break;
+                case 39:
+                    teclas.direita = 0;
+                    break;
+                case 40:
+                    teclas.baixo = 0;
+                    break;
+            }
+        });
     </script>
     
 </body>
