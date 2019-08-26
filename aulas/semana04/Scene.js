@@ -31,3 +31,19 @@ Scene.prototype.limpar = function() {
 Scene.prototype.adicionar = function(sprite) {
     this.sprites.push(sprite);
 }
+
+Scene.prototype.acao = function() {
+    for(var i = 0; i < this.sprites.length; i++) {
+        if(this.sprites[i].comportamento) {
+            this.sprites[i].comportamento();
+        }
+        
+    }
+}
+
+Scene.prototype.passo = function(dt) {
+    this.limpar();
+    this.acao();
+    this.mover(dt);
+    this.desenhar();
+}

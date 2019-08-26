@@ -9,6 +9,7 @@ function Sprite(params = {}) {
         color: "blue",
         imune: 0,
         atirando: 0,
+        comportamento: undefined
     }
     Object.assign(this, exm, params);
 }
