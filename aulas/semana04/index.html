@@ -18,9 +18,16 @@
         var dt = 0;
         var anterior = 0;
 
-        var pc = new Sprite({x:10, y:10, w:10, h:10});
+        var teclas = {
+            esquerda: 0,
+            cima: 0,
+            direita: 0,
+            baixo: 0,
+            espaco: 0
+        }
 
         var cena1 = new Scene({ctx: ctx, w: canvas.width, h: canvas.height});
+        var pc = new Sprite({x:10, y:10, w:10, h:10, comportamento: controlePorTeclado(teclas)});
 
         cena1.adicionar(pc);
         cena1.adicionar(new Sprite({x:150, y:150, color:"red", comportamento: perseguir(pc)}));
@@ -33,6 +40,15 @@
             }
         }
 
+        function controlePorTeclado(teclas) {
+            return function() {
+                if(teclas.esquerda) { this.vx = -70; }
+                else if(teclas.direita) { this.vx = 70; } else { this.vx = 0; }
+                if(teclas.cima) { this.vy = -70; }
+                else if(teclas.baixo) { this.vy = 70; } else { this.vy = 0; }
+            }
+        }
+
         function passo(t) {
             dt = (t-anterior)/1000;
             cena1.passo(dt);
@@ -42,6 +58,44 @@
 
         requestAnimationFrame(passo);
 
+        addEventListener("keydown", function(e) {
+            switch(e.keyCode) {
+                case 32:
+                    teclas.espaco = 1;
+                    break;
+                case 37:
+                    teclas.esquerda = 1;
+                    break;
+                case 38:
+                    teclas.cima = 1;
+                    break;
+                case 39:
+                    teclas.direita = 1;
+                    break;
+                case 40:
+                    teclas.baixo = 1;
+                    break;
+            }
+        });
+        addEventListener("keyup", function(e) {
+            switch(e.keyCode) {
+                case 32:
+                    teclas.espaco = 0;
+                    break;
+                case 37:
+                    teclas.esquerda = 0;
+                    break;
+                case 38:
+                    teclas.cima = 0;
+                    break;
+                case 39:
+                    teclas.direita = 0;
+                    break;
+                case 40:
+                    teclas.baixo = 0;
+                    break;
+            }
+        });
     </script>
     
 </body>
