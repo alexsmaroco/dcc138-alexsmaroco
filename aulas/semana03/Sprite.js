@@ -7,7 +7,8 @@ function Sprite(params = {}) {
         w = 20,
         h = 20,
         color = "blue",
-        imune = 0
+        imune = 0,
+        atirando = 0,
     } = params;
     this.x = x;
     this.y = y;
@@ -17,6 +18,7 @@ function Sprite(params = {}) {
     this.h = h;
     this.color = color;
     this.imune = imune;
+    this.atirando = atirando;
 }
 
 Sprite.prototype = new Sprite({});
