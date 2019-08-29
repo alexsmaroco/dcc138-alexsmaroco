@@ -30,8 +30,8 @@
         var pc = new Sprite({x:10, y:10, w:10, h:10, comportamento: controlePorTeclado(teclas)});
 
         cena1.adicionar(pc);
-        cena1.adicionar(new Sprite({x:150, y:150, color:"red", comportamento: perseguir(pc)}));
-        cena1.adicionar(new Sprite({x:250, y:150, color:"green", comportamento: perseguir(pc)}));
+        cena1.adicionar(new Sprite({x:150, y:150, vang:1, color:"red", comportamento: perseguir(pc)}));
+        cena1.adicionar(new Sprite({x:250, y:150, vang:-2, color:"green", comportamento: perseguir(pc)}));
 
         function perseguir(alvo) {
             return function() {
@@ -43,9 +43,12 @@
         function controlePorTeclado(teclas) {
             return function() {
                 if(teclas.esquerda) { this.vx = -70; }
-                else if(teclas.direita) { this.vx = 70; } else { this.vx = 0; }
+                else if(teclas.direita) { this.vx = 70; }
+                if(teclas.esquerda === teclas.direita) { this.vx = 0; }
+
                 if(teclas.cima) { this.vy = -70; }
-                else if(teclas.baixo) { this.vy = 70; } else { this.vy = 0; }
+                else if(teclas.baixo) { this.vy = 70; }
+                if(teclas.cima === teclas.baixo) { this.vy = 0; }
             }
         }
 

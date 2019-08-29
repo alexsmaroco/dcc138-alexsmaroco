@@ -10,6 +10,8 @@ function Sprite(params = {}) {
         imune: 0,
         atirando: 0,
         comportamento: undefined,
+        ang: 0,
+        vang: 0,
     }
     Object.assign(this, exm, params);
 }
@@ -18,12 +20,27 @@ Sprite.prototype = new Sprite({});
 Sprite.prototype.constructor = Sprite;
 
 Sprite.prototype.desenhar = function(ctx) {
+    ctx.save();
+    
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.ang);
     if(this.imune > 0) {
         ctx.globalAlpha = 0.5*(Math.cos(60*this.imune));
     }
     ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    ctx.strokeStyle = "black";
+    ctx.beginPath();    
+    ctx.lineTo(-this.w/2, -this.h/2);
+    ctx.lineTo(-this.w/2, this.h/2);
+    ctx.lineTo(this.w/2, 0);
+    ctx.fill();
+    ctx.stroke();
+    ctx.closePath();
+    // ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+    ctx.strokeRect(-this.w/2, -this.h/2, this.w, this.h);
     ctx.globalAlpha = 1.0;
+
+    ctx.restore();
 }
 
 Sprite.prototype.atualizaCooldown = function(dt) {
@@ -35,8 +52,9 @@ Sprite.prototype.atualizaCooldown = function(dt) {
 
 Sprite.prototype.mover = function(dt) {
     this.atualizaCooldown(dt);
-    this.x = this.x + this.vx * dt;
-    this.y = this.y + this.vy * dt;
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+    this.ang += this.vang*dt;
 }
 
 Sprite.prototype.perseguir = function(opcoes) {
