@@ -20,6 +20,10 @@ Scene.prototype.desenhar = function() {
 Scene.prototype.mover = function(dt) {
     for(var i = 0; i < this.sprites.length; i++) {
         this.sprites[i].mover(dt);
+        if(this.sprites[i].x > this.w || this.sprites[i].y > this.h) {
+            this.sprites[i] = this.sprites[this.sprites.length-1];
+            this.sprites.pop();
+        }
     }
 }
 
@@ -29,6 +33,7 @@ Scene.prototype.limpar = function() {
 }
 
 Scene.prototype.adicionar = function(sprite) {
+    sprite.scene = this;
     this.sprites.push(sprite);
 }
 

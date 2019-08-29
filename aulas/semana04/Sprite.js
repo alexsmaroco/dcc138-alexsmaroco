@@ -12,6 +12,8 @@ function Sprite(params = {}) {
         comportamento: undefined,
         ang: 0,
         vang: 0,
+        v: 0,
+        scene: undefined,
     }
     Object.assign(this, exm, params);
 }
@@ -52,10 +54,13 @@ Sprite.prototype.atualizaCooldown = function(dt) {
 
 Sprite.prototype.mover = function(dt) {
     this.atualizaCooldown(dt);
+    this.ang += this.vang*dt;
+    this.vx = this.v*Math.cos(this.ang);
+    this.vy = this.v*Math.sin(this.ang);
     this.x += this.vx * dt;
     this.y += this.vy * dt;
-    this.ang += this.vang*dt;
 }
+
 
 Sprite.prototype.perseguir = function(opcoes) {
     this.vx = 30*Math.sign(opcoes.alvo.x - this.x);

@@ -27,7 +27,7 @@
         }
 
         var cena1 = new Scene({ctx: ctx, w: canvas.width, h: canvas.height});
-        var pc = new Sprite({x:10, y:10, w:10, h:10, comportamento: controlePorTeclado(teclas)});
+        var pc = new Sprite({x:10, y:10, w:20, h:20, comportamento: controlePorTecladoV2(teclas)});
 
         cena1.adicionar(pc);
         cena1.adicionar(new Sprite({x:150, y:150, vang:1, color:"red", comportamento: perseguir(pc)}));
@@ -40,7 +40,7 @@
             }
         }
 
-        function controlePorTeclado(teclas) {
+        function controlePorTecladoV1(teclas) {
             return function() {
                 if(teclas.esquerda) { this.vx = -70; }
                 else if(teclas.direita) { this.vx = 70; }
@@ -49,6 +49,24 @@
                 if(teclas.cima) { this.vy = -70; }
                 else if(teclas.baixo) { this.vy = 70; }
                 if(teclas.cima === teclas.baixo) { this.vy = 0; }
+            }
+        }
+
+        function controlePorTecladoV2(teclas) {
+            return function() {
+                if(teclas.esquerda) { this.vang = -2; }
+                else if(teclas.direita) { this.vang = 2; }
+                if(teclas.esquerda === teclas.direita) { this.vang = 0; }
+
+                if(teclas.cima) { this.v = 100; }
+                else if(teclas.baixo) { this.v = -100; }
+                if(teclas.cima === teclas.baixo) { this.v = 0; }
+                if(teclas.espaco && pc.atirando <= 0) {
+                    var tiro = new Sprite({x: pc.x, y: pc.y, w: 5, h: 5, ang:pc.ang, v: 200, color: "white"});
+                    pc.atirando = 1/3;
+                    cena1.adicionar(tiro);
+                    tiro = null;
+                }
             }
         }
 
