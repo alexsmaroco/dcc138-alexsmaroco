@@ -61,10 +61,10 @@
                 if(teclas.cima) { this.v = 100; }
                 else if(teclas.baixo) { this.v = -100; }
                 if(teclas.cima === teclas.baixo) { this.v = 0; }
-                if(teclas.espaco && pc.atirando <= 0) {
-                    var tiro = new Sprite({x: pc.x, y: pc.y, w: 5, h: 5, ang:pc.ang, v: 200, color: "white"});
-                    pc.atirando = 1/3;
-                    cena1.adicionar(tiro);
+                if(teclas.espaco && this.cooldown <= 0) {
+                    var tiro = new Sprite({x: this.x, y: this.y, w: 5, h: 5, ang:this.ang, v: 200, color: "white"});
+                    this.cooldown = 1/3;
+                    this.scene.adicionar(tiro);
                     tiro = null;
                 }
             }

@@ -8,7 +8,7 @@ function Sprite(params = {}) {
         h: 20,
         color: "blue",
         imune: 0,
-        atirando: 0,
+        cooldown: 0,
         comportamento: undefined,
         ang: 0,
         vang: 0,
@@ -48,8 +48,8 @@ Sprite.prototype.desenhar = function(ctx) {
 Sprite.prototype.atualizaCooldown = function(dt) {
     if(this.imune > 0)
         this.imune-=dt;
-    if(this.atirando > 0)
-        this.atirando-=dt;
+    if(this.cooldown > 0)
+        this.cooldown-=dt;
 }
 
 Sprite.prototype.mover = function(dt) {
