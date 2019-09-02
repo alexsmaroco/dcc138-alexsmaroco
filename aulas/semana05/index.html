@@ -57,14 +57,14 @@
 
         function spawner(alvo) {
             return function() {
+                var dx = alvo.x - this.x;
+                var dy = alvo.y - this.y;
+                var da = Math.sqrt(dx*dx + dy*dy);
+                var adj = 1.5;
+                var prod = (dx/da)*Math.cos(this.ang + adj) + (dy/da)*Math.sin(this.ang + adj);
+                this.vang = 2*prod;
                 if(this.props.cdSpawn < 0) {
                     this.props.cdSpawn = 2;
-                    var dx = alvo.x - this.x;
-                    var dy = alvo.y - this.y;
-                    var da = Math.sqrt(dx*dx + dy*dy);
-                    var adj = 1.5;
-                    var prod = (dx/da)*Math.cos(this.ang + adj) + (dy/da)*Math.sin(this.ang + adj);
-                    this.vang = 2*prod;
                     var novo = new Sprite({x:this.x, y:this.y, vang:1, v: 50, color:"yellow", props:{tipo:"npc"}, comportamento: perseguirAngular(alvo)})
                     cena1.adicionar(novo);
                     novo = null;
