@@ -51,6 +51,8 @@ Sprite.prototype.atualizaCooldown = function(dt) {
         this.imune-=dt;
     if(this.cooldown > 0)
         this.cooldown-=dt;
+    if(this.props.cdSpawn > 0)
+        this.props.cdSpawn-=dt;
 }
 
 Sprite.prototype.mover = function(dt) {

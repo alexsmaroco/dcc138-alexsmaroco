@@ -25,13 +25,14 @@
             baixo: 0,
             espaco: 0
         }
-
+        
         var cena1 = new Scene({ctx: ctx, w: canvas.width, h: canvas.height});
         var pc = new Sprite({x:10, y:10, w:20, h:20, props:{tipo:"pc"}, comportamento: controlePorTecladoV2(teclas)});
-
+        var cdSpawn = 2;
+        
         cena1.adicionar(pc);
         for(var i = 0; i < 5; i++) {
-            cena1.adicionar(new Sprite({x:(Math.random()*canvas.width), y:(Math.random()*canvas.height), vang:1, v: 30, color:"red", props:{tipo:"npc"}, comportamento: perseguirAngular(pc)})); 
+            cena1.adicionar(new Sprite({x:(Math.random()*canvas.width), y:(Math.random()*canvas.height), vang:1, v: 30, color:"red", props:{tipo:"npc", cdSpawn:2}, comportamento: spawner(pc)})); 
         }
         //cena1.adicionar(new Sprite({x:250, y:150, vang:-2, v: 30, color:"green", props:{tipo:"npc"},  comportamento: perseguirAngular(pc)}));
 
@@ -51,6 +52,23 @@
                 var prod = (dx/da)*Math.cos(this.ang + adj) + (dy/da)*Math.sin(this.ang + adj);
                 this.vang = 2*prod;
                 //this.v = 30;
+            }
+        }
+
+        function spawner(alvo) {
+            return function() {
+                if(this.props.cdSpawn < 0) {
+                    this.props.cdSpawn = 2;
+                    var dx = alvo.x - this.x;
+                    var dy = alvo.y - this.y;
+                    var da = Math.sqrt(dx*dx + dy*dy);
+                    var adj = 1.5;
+                    var prod = (dx/da)*Math.cos(this.ang + adj) + (dy/da)*Math.sin(this.ang + adj);
+                    this.vang = 2*prod;
+                    var novo = new Sprite({x:this.x, y:this.y, vang:1, v: 50, color:"yellow", props:{tipo:"npc"}, comportamento: perseguirAngular(alvo)})
+                    cena1.adicionar(novo);
+                    novo = null;
+                }
             }
         }
 
