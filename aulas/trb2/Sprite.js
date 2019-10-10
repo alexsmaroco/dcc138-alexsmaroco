@@ -133,6 +133,7 @@ Sprite.prototype.mover = function (map, dt) {
     this.y = this.y + this.vy*dt;
   }
   this.frame += this.poses[this.pose].v*dt;
+  if(this.imgKey === "pc" && (this.vx == 0 && this.vy == 0)) this.frame = 0;
   if(this.frame>this.poses[this.pose].frames-1){
     this.frame = 0;
   }
