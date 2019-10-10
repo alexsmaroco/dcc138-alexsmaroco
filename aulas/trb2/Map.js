@@ -1,13 +1,15 @@
-function Map(rows, collumns) {
+function Map(rows, columns) {
   this.SIZE = 40;
+  this.columns = columns;
+  this.rows = rows;
   this.cooldownPowerup = 1;
   this.powerups = [];
   this.cells = [];
   for (var r = 0; r < rows; r++) {
     this.cells[r] = [];
-    for (var c = 0; c < collumns; c++) {
-      this.cells[r][c] = 0;
-	  this.cells[r][c] = 0;
+    for (var c = 0; c < columns; c++) {
+      this.cells[r][c] = {tipo: "vazio"};
+	  //this.cells[r][c] = 0;
     }
   }
 }
@@ -22,14 +24,16 @@ Map.prototype.desenhar = function (ctx) {
 
   for (var r = 0; r < this.cells.length; r++) {
     for (var c = 0; c < this.cells[0].length; c++) {
-      if(this.cells[r][c]==1){
-        ctx.fillStyle = "red";
-        ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
-      }
-	  else if(this.cells[r][c]==2) {
-		ctx.fillStyle = "grey";
-        ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
-	  }
+		switch(this.cells[r][c].tipo) {
+			case "paredeInd":
+				ctx.fillStyle = "red";
+				ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+				break;
+			case "paredeDest":
+				ctx.fillStyle = "grey";
+				ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+				break;
+		}
     }
   }
   
@@ -41,13 +45,13 @@ Map.prototype.setCells = function (newCells) {
     for (var j = 0; j < newCells[i].length; j++) {
       switch (newCells[i][j]) {
         case 1:
-          this.cells[i][j] = 1;
+          this.cells[i][j] = {tipo: "paredeInd"}; // parede indestrutivel
           break;
         case 2:
-          this.cells[i][j] = 2;
+          this.cells[i][j] = {tipo: "paredeDest"}; // parede destrutivel
           break;
         default:
-          this.cells[i][j] = 0;
+          this.cells[i][j] = {tipo: "vazio"}; // vazio
       }
     }
   }
@@ -61,7 +65,7 @@ Map.prototype.spawnPowerup = function(dt) {
 		var gy = 0;
 		var gx = 0;
 		// busca local possivel
-		while(this.cells[gy][gx] != 0 || this.cells[gy][gx] != 2) {
+		while(this.cells[gy][gx].tipo != "vazio" || this.cells[gy][gx].tipo != "paredeDest") {
 			gy = Math.floor(Math.random()*this.cells.length);
 			gx = Math.floor(Math.random()*this.cells[0].length);
 		}
@@ -85,7 +89,7 @@ Map.prototype.spawnPowerupFixo = function(qtd) {
 		var gy = 0;
 		var gx = 0;
 		// busca local possivel
-		while(this.cells[gy][gx] != 0 || this.cells[gy][gx] != 2) {
+		while(this.cells[gy][gx].tipo != "paredeDest") {
 			gy = Math.floor(Math.random()*this.cells.length);
 			gx = Math.floor(Math.random()*this.cells[0].length);
 		}

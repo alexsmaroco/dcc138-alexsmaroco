@@ -112,26 +112,27 @@ Sprite.prototype.mover = function (map, dt) {
 	}
   }
   
-  if(this.vx>0 && map.cells[this.gy][this.gx+1]==1 || map.cells[this.gy][this.gx+1]==2 || map.cells[this.gy][this.gx+1]==3){
+  if(this.vx > 0 && map.cells[this.gy][this.gx+1].tipo != "vazio"){
     this.x += Math.min((this.gx+1)*map.SIZE - (this.x+this.SIZE/2),this.vx*dt);
 	
-  } else if(this.vx <0 && map.cells[this.gy][this.gx-1]==1 || map.cells[this.gy][this.gx-1]==2 || map.cells[this.gy][this.gx-1]==3){
+  } else if(this.vx < 0 && map.cells[this.gy][this.gx-1].tipo != "vazio"){
       this.x += Math.max((this.gx)*map.SIZE - (this.x-this.SIZE/2),this.vx*dt);
 
 	}
   else {
     this.x = this.x + this.vx*dt;
   }
-  if(this.vy >0 && map.cells[this.gy+1][this.gx]==1 || map.cells[this.gy+1][this.gx]==2 || map.cells[this.gy+1][this.gx]==3){
+  
+  if(this.vy > 0 && map.cells[this.gy+1][this.gx].tipo != "vazio"){
     this.y += Math.min((this.gy+1)*map.SIZE - (this.y+this.SIZE/2),this.vy*dt);
 
-  } else if( this.vy<0 && map.cells[this.gy-1][this.gx]==1 || map.cells[this.gy-1][this.gx]==2 || map.cells[this.gy-1][this.gx]==3){
+  } else if(this.vy < 0 && map.cells[this.gy-1][this.gx].tipo != "vazio"){
       this.y += Math.max((this.gy)*map.SIZE - (this.y-this.SIZE/2),this.vy*dt);
 	}
-	
   else {
     this.y = this.y + this.vy*dt;
   }
+
   this.frame += this.poses[this.pose].v*dt;
   if(this.imgKey === "pc" && (this.vx == 0 && this.vy == 0)) this.frame = 0;
   if(this.frame>this.poses[this.pose].frames-1){

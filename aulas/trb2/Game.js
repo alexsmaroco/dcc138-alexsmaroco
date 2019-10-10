@@ -102,7 +102,7 @@ function explodir(bomb, map, dt) {
 	var atingiup2 = false;
 	
 	// tira bomba do grid, se for trata-la como parede
-	map.cells[gy][gx] = 0;
+	map.cells[gy][gx].tipo = "vazio";
 	
 	// caso fique em cima da bomba
 	if(pc1.gx == gx && pc1.gy == gy) {
@@ -115,11 +115,11 @@ function explodir(bomb, map, dt) {
 	for(var i = 1; i <= bomb.power; i++) {
 		if(gy-i >= 0) {
 			// para de destruir ao encontrar parede
-			if(map.cells[gy-i][gx] == 1) {
+			if(map.cells[gy-i][gx].tipo === "paredeInd") {
 				destruir1 = false;
 			}
-			if(destruir1 && map.cells[gy-i][gx] == 2) {
-				map.cells[gy-i][gx] = 0;
+			if(destruir1 && map.cells[gy-i][gx].tipo === "paredeDest") {
+				map.cells[gy-i][gx].tipo = "vazio";
 				destruir1 = false;
 			}
 			if(destruir1 && pc1.gx == gx && pc1.gy == gy-i) {
@@ -134,11 +134,11 @@ function explodir(bomb, map, dt) {
 		}
 		if(gy+i < map.cells.length) {
 			// para de destruir ao encontrar parede
-			if(map.cells[gy+i][gx] == 1) {
+			if(map.cells[gy+i][gx].tipo === "paredeInd") {
 				destruir2 = false;
 			}
-			if(destruir2 && map.cells[gy+i][gx] == 2) {
-				map.cells[gy+i][gx] = 0;
+			if(destruir2 && map.cells[gy+i][gx].tipo === "paredeDest") {
+				map.cells[gy+i][gx].tipo = "vazio";
 				destruir2 = false;
 			}
 			if(destruir2 && pc1.gx == gx && pc1.gy == gy+i) {
@@ -153,11 +153,11 @@ function explodir(bomb, map, dt) {
 		}
 		if(gx-i >= 0) {
 			// para de destruir ao encontrar parede
-			if(map.cells[gy][gx-i] == 1) {
+			if(map.cells[gy][gx-i].tipo === "paredeInd") {
 				destruir3 = false;
 			}
-			if(destruir3 && map.cells[gy][gx-i] == 2) {
-				map.cells[gy][gx-i] = 0;
+			if(destruir3 && map.cells[gy][gx-i].tipo === "paredeDest") {
+				map.cells[gy][gx-i].tipo = "vazio";
 				destruir3 = false;
 			}
 			if(destruir3 && pc1.gx == gx-i && pc1.gy == gy) {
@@ -172,11 +172,11 @@ function explodir(bomb, map, dt) {
 		}
 		if(gx+i < map.cells[0].length) {
 			// para de destruir ao encontrar parede
-			if(map.cells[gy][gx+i] == 1) {
+			if(map.cells[gy][gx+i].tipo === "paredeInd") {
 				destruir4 = false;
 			}
-			if(destruir4 && map.cells[gy][gx+i] == 2) {
-				map.cells[gy][gx+i] = 0;
+			if(destruir4 && map.cells[gy][gx+i].tipo === "paredeDest") {
+				map.cells[gy][gx+i].tipo = "vazio";
 				destruir4 = false;
 			}
 			if(destruir4 && pc1.gx == gx+i && pc1.gy == gy) {
