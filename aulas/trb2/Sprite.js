@@ -94,8 +94,10 @@ Sprite.prototype.desenhaPowerup = function(ctx) {
 }
 
 Sprite.prototype.mover = function (map, dt) {
-  this.cooldown-=dt;
-  this.imunidade-=dt;
+  if(this.cooldown > 0)
+    this.cooldown-=dt;
+  if(this.imunidade > 0)
+    this.imunidade-=dt;
 
   this.gx = Math.floor(this.x/map.SIZE);
   this.gy = Math.floor(this.y/map.SIZE);
