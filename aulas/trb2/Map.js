@@ -113,4 +113,3 @@ Map.prototype.spawnPowerupFixo = function(qtd) {
 	}
 }
 
-

@@ -228,9 +228,11 @@ function desenhaInfo(ctx) {
 function dropBomb(player, map) {
 	if(player.cooldown < 0 && player.bombs.length < player.maxBombs) {
 		var bomb = new Sprite();
+		var gx = Math.floor(player.x/map.SIZE);
+		var gy = Math.floor(player.y/map.SIZE);
 		// centraliza no grid
-		bomb.x = Math.floor(player.x/map.SIZE)*map.SIZE + map.SIZE/2;
-		bomb.y = Math.floor(player.y/map.SIZE)*map.SIZE + map.SIZE/2;
+		bomb.x = gx*map.SIZE + map.SIZE/2;
+		bomb.y = gy*map.SIZE + map.SIZE/2;
 		// nao deixa atravessar bombas !! faz personagem bugar e atravessar paredes !!
 		//map.cells[Math.floor(this.y/map.SIZE)][Math.floor(this.x/map.SIZE)] = 3;
 		bomb.w = 20;
