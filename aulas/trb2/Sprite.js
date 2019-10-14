@@ -81,9 +81,9 @@ Sprite.prototype.desenhaExplosao = function(ctx,x,y) {
 Sprite.prototype.desenhaPowerup = function(ctx) {
 	ctx.save();
 	ctx.translate(this.x, this.y);
-	if(this.tipo == 4) {
+	if(this.tipo == 0) {
 		ctx.fillStyle = "brown";
-	} else if(this.tipo == 5) {
+	} else if(this.tipo == 1) {
 		ctx.fillStyle = "green";
 	}
 	ctx.beginPath();
@@ -101,17 +101,31 @@ Sprite.prototype.mover = function (map, dt) {
   this.gy = Math.floor(this.y/map.SIZE);
   
   // testa se pisou em powerup
-  for(var i = map.powerups.length-1; i >= 0; i--) {
-	if(this.gy == map.powerups[i].gy && this.gx == map.powerups[i].gx) {
-		if(map.powerups[i].tipo == 4) {
-			this.power++;
-		} else if(map.powerups[i].tipo == 5) {
-			this.maxBombs++;
-		}
-		map.powerups.splice(i,1);
-	}
+  if(map.cells[this.gy][this.gx].tipoObjeto === "powerup") {
+    switch(map.cells[this.gy][this.gx].objeto.tipo) {
+      case 0:
+        this.power++;
+        break;
+      case 1:
+        this.maxBombs++;
+        break;
+      default: console.log("Powerup com tipo errado!");
+    }
+    map.cells[this.gy][this.gx].objeto = null;
+    map.cells[this.gy][this.gx].tipoObjeto = undefined;
   }
-  
+  /*
+  for(var i = map.powerups.length-1; i >= 0; i--) {
+    if(this.gy == map.powerups[i].gy && this.gx == map.powerups[i].gx) {
+      if(map.powerups[i].tipo == 4) {
+        this.power++;
+      } else if(map.powerups[i].tipo == 5) {
+        this.maxBombs++;
+      }
+      map.powerups.splice(i,1);
+    }
+  }
+  */
   if(this.vx > 0 && map.cells[this.gy][this.gx+1].tipo != "vazio"){
     this.x += Math.min((this.gx+1)*map.SIZE - (this.x+this.SIZE/2),this.vx*dt);
 	

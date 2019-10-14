@@ -12,10 +12,10 @@ var fim = false;
 function init(){
   canvas = document.getElementsByTagName('canvas')[0];
   canvas.width = 520;
-  canvas.height = 460;
+  canvas.height = 460+80;
   ctx = canvas.getContext("2d");
   images = new ImageLoader();
-  images.load("pc","pc.png");
+  images.load("pc","assets/pc.png");
   map = new Map(Math.floor(canvas.height/40), Math.floor(canvas.width/40));
   map.images = images;
   map.setCells([
@@ -27,13 +27,15 @@ function init(){
     [1,2,2,2,2,2,2,2,2,2,2,2,1],
     [1,2,1,2,1,2,1,2,1,2,1,2,1],
     [1,2,2,2,2,2,2,2,2,2,2,2,1],
+	[1,2,1,2,1,2,1,2,1,2,1,2,1],
+	[1,2,2,2,2,2,2,2,2,2,2,2,1],
     [1,2,1,2,1,2,1,2,1,2,1,0,1],
     [1,2,2,2,2,2,2,2,2,2,0,0,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1],
   ]);
   map.cooldownPowerup = 5;
   // spawna powerups no map !! problema: pode ter mais de 1 no mesmo lugar
-  //map.spawnPowerupFixo(10);
+  map.spawnPowerupFixo(10);
   pc1 = new Sprite();
   pc1.id = "1";
   pc1.x = 60;
@@ -45,7 +47,7 @@ function init(){
   pc2 = new Sprite();
   pc2.id = "2";
   pc2.x = 460;
-  pc2.y = 380;
+  pc2.y = 380+80;
   pc2.vidas = 3;
   pc2.imunidade = 1;
   pc2.images = images;
@@ -208,7 +210,7 @@ function explodir(bomb, map, dt) {
 function desenhaInfo(ctx) {
   ctx.font = "15px Arial";
   ctx.fillStyle = "blue";
-  ctx.fillText("Player 1: " + pc1.vidas + " vida(s)       " + "Player 2: " + pc2.vidas + " vida(s)", 100, 455);
+  ctx.fillText("Player 1: " + pc1.vidas + " vida(s)       " + "Player 2: " + pc2.vidas + " vida(s)", 100, 455+80);
   if(pc1.vidas <= 0) {
 	ctx.font = "50px Arial";
 	ctx.fillStyle = "blue";
