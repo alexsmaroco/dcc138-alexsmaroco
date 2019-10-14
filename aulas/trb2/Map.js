@@ -8,7 +8,7 @@ function Map(rows, columns) {
   for (var r = 0; r < rows; r++) {
     this.cells[r] = [];
     for (var c = 0; c < columns; c++) {
-      this.cells[r][c] = {tipo: "vazio"};
+		this.cells[r][c] = {tipo: "vazio", objeto: null, tipoObjeto: undefined};
 	  //this.cells[r][c] = 0;
     }
   }
@@ -18,10 +18,11 @@ function Map(rows, columns) {
 
 Map.prototype.desenhar = function (ctx) {
 
-	for(var i = 0; i < this.powerups.length; i++) {
-		this.powerups[i].desenhaPowerup(ctx);
-	}
-
+/*
+for(var i = 0; i < this.powerups.length; i++) {
+	this.powerups[i].desenhaPowerup(ctx);
+}
+*/
   for (var r = 0; r < this.cells.length; r++) {
     for (var c = 0; c < this.cells[0].length; c++) {
 		switch(this.cells[r][c].tipo) {
@@ -32,6 +33,11 @@ Map.prototype.desenhar = function (ctx) {
 			case "paredeDest":
 				ctx.fillStyle = "grey";
 				ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+				break;
+			case "vazio":
+				if(this.cells[r][c].tipoObjeto === "powerup") {
+					this.cells[r][c].objeto.desenhaPowerup(ctx);
+				}
 				break;
 		}
     }
@@ -45,19 +51,19 @@ Map.prototype.setCells = function (newCells) {
     for (var j = 0; j < newCells[i].length; j++) {
       switch (newCells[i][j]) {
         case 1:
-          this.cells[i][j] = {tipo: "paredeInd"}; // parede indestrutivel
+          this.cells[i][j] = {tipo: "paredeInd", objeto: null, tipoObjeto: undefined}; // parede indestrutivel
           break;
         case 2:
-          this.cells[i][j] = {tipo: "paredeDest"}; // parede destrutivel
+          this.cells[i][j] = {tipo: "paredeDest", objeto: null, tipoObjeto: undefined}; // parede destrutivel
           break;
         default:
-          this.cells[i][j] = {tipo: "vazio"}; // vazio
+          this.cells[i][j] = {tipo: "vazio", objeto: null, tipoObjeto: undefined}; // vazio
       }
     }
   }
 };
 
-// funçao para spawn de powerups em intervalos de tempo
+// funçao para spawn de powerups em intervalos de tempo -- CORRIGIR
 Map.prototype.spawnPowerup = function(dt) {
 	this.cooldownPowerup-=dt;
 	if(this.cooldownPowerup < 0) {
@@ -85,11 +91,11 @@ Map.prototype.spawnPowerup = function(dt) {
 // Funçao pra spawn um numero fixo de powerups
 Map.prototype.spawnPowerupFixo = function(qtd) {
 	for(var i = 0; i < qtd; i++) {
-		var tipo = Math.floor(4+Math.random()*2);
+		var tipo = Math.floor(Math.random()*2);
 		var gy = 0;
 		var gx = 0;
 		// busca local possivel
-		while(this.cells[gy][gx].tipo != "paredeDest") {
+		while(this.cells[gy][gx].tipo != "paredeDest" && this.cells[gy][gx].objeto == null) {
 			gy = Math.floor(Math.random()*this.cells.length);
 			gx = Math.floor(Math.random()*this.cells[0].length);
 		}
@@ -100,7 +106,9 @@ Map.prototype.spawnPowerupFixo = function(qtd) {
 		powerup.gy = gy;
 		//this.cells[gy][gx] += 0.1;
 		powerup.tipo = tipo;
-		this.powerups.push(powerup);
+		this.cells[gy][gx].objeto = powerup;
+		this.cells[gy][gx].tipoObjeto = "powerup";
+		//this.powerups.push(powerup);
 	}
 }
 
