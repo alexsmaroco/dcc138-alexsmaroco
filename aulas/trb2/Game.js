@@ -225,6 +225,23 @@ function desenhaInfo(ctx) {
   }
 }
 
+function dropBomb(player, map) {
+	if(player.cooldown < 0 && player.bombs.length < player.maxBombs) {
+		var bomb = new Sprite();
+		// centraliza no grid
+		bomb.x = Math.floor(player.x/map.SIZE)*map.SIZE + map.SIZE/2;
+		bomb.y = Math.floor(player.y/map.SIZE)*map.SIZE + map.SIZE/2;
+		// nao deixa atravessar bombas !! faz personagem bugar e atravessar paredes !!
+		//map.cells[Math.floor(this.y/map.SIZE)][Math.floor(this.x/map.SIZE)] = 3;
+		bomb.w = 20;
+		bomb.h = 20;
+		bomb.timer = 2;
+		bomb.power = player.power;
+		player.bombs.push(bomb);
+		player.cooldown = 0.2;
+	}
+}
+
 
 function initControls(){
   addEventListener('keydown', function(e){
@@ -232,7 +249,7 @@ function initControls(){
 
 		// player 1
 	  case 32:
-		pc1.dropBomb(map);
+		dropBomb(pc1, map);
 		break;
 	  case 65:
         pc1.vx = -100;
@@ -261,7 +278,7 @@ function initControls(){
 	
 		// player 2
 	  case 13:
-		pc2.dropBomb(map);
+		dropBomb(pc2, map);
 		break;
       case 37:
 		pc2.vx = -100;
