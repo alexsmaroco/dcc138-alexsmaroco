@@ -95,7 +95,7 @@ Map.prototype.spawnPowerupFixo = function(qtd) {
 		var gy = 0;
 		var gx = 0;
 		// busca local possivel
-		while(this.cells[gy][gx].tipo != "paredeDest" && this.cells[gy][gx].objeto == null) {
+		while(this.cells[gy][gx].tipo != "paredeDest" || this.cells[gy][gx].objeto != null) {
 			gy = Math.floor(Math.random()*this.cells.length);
 			gx = Math.floor(Math.random()*this.cells[0].length);
 		}
@@ -108,6 +108,7 @@ Map.prototype.spawnPowerupFixo = function(qtd) {
 		powerup.tipo = tipo;
 		this.cells[gy][gx].objeto = powerup;
 		this.cells[gy][gx].tipoObjeto = "powerup";
+		console.log("Spawn powerup " + i + ": " + gy + ", " + gx);
 		//this.powerups.push(powerup);
 	}
 }
