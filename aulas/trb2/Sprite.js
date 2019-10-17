@@ -15,24 +15,22 @@ function Sprite(){
     {row: 8, col:1, frames:8, v: 4},
     {row: 11, col:0, frames:1, v: 4},
   ];
-  this.images = null;
-  this.imgKey = "pc";
+  this.imgkey = "pc";
   this.cooldown = 1;
   this.bombs = [];
-  this.maxBombs = 1;
+  this.maxBombs = 3;
   this.power = 1;
-  
 }
 
-Sprite.prototype.desenhar = function (ctx) {
-  this.desenharQuadrado(ctx);
-  this.desenharPose(ctx);
+Sprite.prototype.desenhar = function (ctx, images) {
+  this.desenharSombra(ctx);
+  this.desenharPose(ctx, images);
   for(var i = 0; i < this.bombs.length; i++) {
 	   this.bombs[i].desenharBomba(ctx);
   }
 }
 
-Sprite.prototype.desenharQuadrado = function (ctx) {
+Sprite.prototype.desenharSombra = function (ctx) {
   ctx.save();
   ctx.translate(this.x, this.y);
   ctx.fillStyle = "rgba(0,0,0,0.3)";
@@ -44,11 +42,11 @@ Sprite.prototype.desenharQuadrado = function (ctx) {
   ctx.restore();
 };
 
-Sprite.prototype.desenharPose = function (ctx) {
+Sprite.prototype.desenharPose = function (ctx, images) {
   ctx.save();
   ctx.translate(this.x, this.y);
-  this.images.drawFrame(ctx,
-    this.imgKey,
+  images.drawFrame(ctx,
+    this.imgkey,
     this.poses[this.pose].row,
     Math.floor(this.frame),
     -32,-56, 64
@@ -138,28 +136,10 @@ Sprite.prototype.mover = function (map, dt) {
   }
 
   this.frame += this.poses[this.pose].v*dt;
-  if(this.imgKey === "pc" && (this.vx == 0 && this.vy == 0)) this.frame = 0;
+  if(this.imgkey === "pc" && (this.vx == 0 && this.vy == 0)) this.frame = 0;
   if(this.frame>this.poses[this.pose].frames-1){
     this.frame = 0;
   }
   
 };
 
-/*
-Sprite.prototype.dropBomb = function(map) {
-	if(this.cooldown < 0 && this.bombs.length < this.maxBombs) {
-		var bomb = new Sprite();
-		// centraliza no grid
-		bomb.x = Math.floor(this.x/map.SIZE)*map.SIZE + map.SIZE/2;
-		bomb.y = Math.floor(this.y/map.SIZE)*map.SIZE + map.SIZE/2;
-		// nao deixa atravessar bombas !! faz personagem bugar e atravessar paredes !!
-		//map.cells[Math.floor(this.y/map.SIZE)][Math.floor(this.x/map.SIZE)] = 3;
-		bomb.w = 20;
-		bomb.h = 20;
-		bomb.timer = 2;
-		bomb.power = this.power;
-		this.bombs.push(bomb);
-		this.cooldown = 0.2;
-	}
-}
-*/
