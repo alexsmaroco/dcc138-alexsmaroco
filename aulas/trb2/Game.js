@@ -148,6 +148,20 @@ function explodir(bomb, map) {
 		}
 		if(gy+i < map.cells.length && destruir2) {
 			// para de destruir ao encontrar parede
+			switch(map.cells[gy+i][gx].tipo) {
+				case "paredeInd":
+					destruir1 = false;
+					break;
+				case "paredeDest":
+					map.cells[gy+i][gx].tipo = "vazio";
+					destruir1 = false;
+					break;
+				case "bomba":
+					map.cells[gy+i][gx].tipo = "vazio";
+					chainReaction((gy+i), gx);
+					break;
+			}
+			/*
 			if(map.cells[gy+i][gx].tipo === "paredeInd") {
 				destruir2 = false;
 			}
@@ -155,6 +169,7 @@ function explodir(bomb, map) {
 				map.cells[gy+i][gx].tipo = "vazio";
 				destruir2 = false;
 			}
+			*/
 			if(pc1.gx == gx && pc1.gy == gy+i) {
 				atingiup1 = true;
 			}
@@ -167,6 +182,20 @@ function explodir(bomb, map) {
 		}
 		if(gx-i >= 0 && destruir3) {
 			// para de destruir ao encontrar parede
+			switch(map.cells[gy][gx-i].tipo) {
+				case "paredeInd":
+					destruir1 = false;
+					break;
+				case "paredeDest":
+					map.cells[gy][gx-i].tipo = "vazio";
+					destruir1 = false;
+					break;
+				case "bomba":
+					map.cells[gy][gx-i].tipo = "vazio";
+					chainReaction(gy, (gx-i));
+					break;
+			}
+			/*
 			if(map.cells[gy][gx-i].tipo === "paredeInd") {
 				destruir3 = false;
 			}
@@ -174,6 +203,7 @@ function explodir(bomb, map) {
 				map.cells[gy][gx-i].tipo = "vazio";
 				destruir3 = false;
 			}
+			*/
 			if(pc1.gx == gx-i && pc1.gy == gy) {
 				atingiup1 = true;
 			}
@@ -186,6 +216,20 @@ function explodir(bomb, map) {
 		}
 		if(gx+i < map.cells[0].length && destruir4) {
 			// para de destruir ao encontrar parede
+			switch(map.cells[gy][gx+i].tipo) {
+				case "paredeInd":
+					destruir1 = false;
+					break;
+				case "paredeDest":
+					map.cells[gy][gx+i].tipo = "vazio";
+					destruir1 = false;
+					break;
+				case "bomba":
+					map.cells[gy][gx+i].tipo = "vazio";
+					chainReaction(gy, (gx+i));
+					break;
+			}
+			/*
 			if(map.cells[gy][gx+i].tipo === "paredeInd") {
 				destruir4 = false;
 			}
@@ -193,6 +237,7 @@ function explodir(bomb, map) {
 				map.cells[gy][gx+i].tipo = "vazio";
 				destruir4 = false;
 			}
+			*/
 			if(pc1.gx == gx+i && pc1.gy == gy) {
 				atingiup1 = true;
 			}
