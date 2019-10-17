@@ -34,6 +34,10 @@ for(var i = 0; i < this.powerups.length; i++) {
 				ctx.fillStyle = "grey";
 				ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
 				break;
+			case "bomba":
+				//ctx.fillStyle = "grey";
+				//ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+				break;
 			case "vazio":
 				if(this.cells[r][c].tipoObjeto === "powerup") {
 					this.cells[r][c].objeto.desenhaPowerup(ctx);

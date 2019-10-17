@@ -11,8 +11,8 @@ var fim = false;
 
 function init(){
   canvas = document.getElementsByTagName('canvas')[0];
-  canvas.width = 520;
-  canvas.height = 460+80;
+  canvas.width = (13*40);
+  canvas.height = (13*40)+20;
   ctx = canvas.getContext("2d");
   images = new ImageLoader();
   images.load("pc","assets/pc.png");
@@ -66,14 +66,14 @@ function passo(t){
 		for (var i = pc1.bombs.length-1;i>=0; i--) {
 			pc1.bombs[i].timer-=dt;
 			if(pc1.bombs[i].timer < 0) {
-				explodir(pc1.bombs[i], map, dt);
+				explodir(pc1.bombs[i], map);
 				pc1.bombs.splice(i, 1);
 			}
 		}
 		for (var i = pc2.bombs.length-1;i>=0; i--) {
 			pc2.bombs[i].timer-=dt;
 			if(pc2.bombs[i].timer < 0) {
-				explodir(pc2.bombs[i], map, dt);
+				explodir(pc2.bombs[i], map);
 				pc2.bombs.splice(i, 1);
 			}
 		}
@@ -93,7 +93,7 @@ function passo(t){
 
 
 
-function explodir(bomb, map, dt) {
+function explodir(bomb, map) {
 	var gx = Math.floor(bomb.x/map.SIZE);
 	var gy = Math.floor(bomb.y/map.SIZE);
 	var destruir1 = true;
@@ -239,6 +239,7 @@ function dropBomb(player, map) {
 		bomb.h = 20;
 		bomb.timer = 2;
 		bomb.power = player.power;
+		map.cells[gy][gx].tipo = "bomba";
 		player.bombs.push(bomb);
 		player.cooldown = 0.2;
 	}

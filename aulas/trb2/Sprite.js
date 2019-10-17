@@ -116,19 +116,7 @@ Sprite.prototype.mover = function (map, dt) {
     map.cells[this.gy][this.gx].objeto = null;
     map.cells[this.gy][this.gx].tipoObjeto = undefined;
   }
-  /*
-  for(var i = map.powerups.length-1; i >= 0; i--) {
-    if(this.gy == map.powerups[i].gy && this.gx == map.powerups[i].gx) {
-      if(map.powerups[i].tipo == 4) {
-        this.power++;
-      } else if(map.powerups[i].tipo == 5) {
-        this.maxBombs++;
-      }
-      map.powerups.splice(i,1);
-    }
-  }
-  */
-  if(this.vx > 0 && map.cells[this.gy][this.gx+1].tipo != "vazio"){
+  if(this.vx > 0 && map.cells[this.gy][this.gx+1].tipo != "vazio") {
     this.x += Math.min((this.gx+1)*map.SIZE - (this.x+this.SIZE/2),this.vx*dt);
 	
   } else if(this.vx < 0 && map.cells[this.gy][this.gx-1].tipo != "vazio"){
@@ -157,6 +145,7 @@ Sprite.prototype.mover = function (map, dt) {
   
 };
 
+/*
 Sprite.prototype.dropBomb = function(map) {
 	if(this.cooldown < 0 && this.bombs.length < this.maxBombs) {
 		var bomb = new Sprite();
@@ -173,4 +162,4 @@ Sprite.prototype.dropBomb = function(map) {
 		this.cooldown = 0.2;
 	}
 }
-
+*/
