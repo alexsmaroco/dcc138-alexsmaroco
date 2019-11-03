@@ -23,7 +23,7 @@ function init(){
 	images.load("tiles", "assets/Tileset.png");
 	images.load("bombs", "assets/Bombs.png");
 	images.load("powerups", "assets/Powerups.png");
-	images.load("MainMenuBG", "assets/MMenuBG.png");
+	images.load("MainMenuBG", "assets/MMenuBg.png");
   map = new Map(Math.floor(canvas.height/40), Math.floor(canvas.width/40));
   //map.images = images;
   map.setCells([
