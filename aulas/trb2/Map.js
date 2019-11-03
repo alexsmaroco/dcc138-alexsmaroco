@@ -11,42 +11,56 @@ function Map(rows, columns) {
 		this.cells[r][c] = {tipo: "vazio", objeto: null, tipoObjeto: undefined};
 	  //this.cells[r][c] = 0;
     }
-  }
+	}
+	this.animExplosion = []; // guarda animações de explosoes
 }
 
 
 
-Map.prototype.desenhar = function (ctx) {
+Map.prototype.desenhar = function (ctx, images) {
 
-/*
-for(var i = 0; i < this.powerups.length; i++) {
-	this.powerups[i].desenhaPowerup(ctx);
-}
-*/
   for (var r = 0; r < this.cells.length; r++) {
     for (var c = 0; c < this.cells[0].length; c++) {
-		switch(this.cells[r][c].tipo) {
-			case "paredeInd":
-				ctx.fillStyle = "red";
-				ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
-				break;
-			case "paredeDest":
-				ctx.fillStyle = "grey";
-				ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
-				break;
-			case "bomba":
-				//ctx.fillStyle = "grey";
-				//ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
-				break;
-			case "vazio":
-				if(this.cells[r][c].tipoObjeto === "powerup") {
-					this.cells[r][c].objeto.desenhaPowerup(ctx);
-				}
-				break;
-		}
+			images.drawTile(ctx,
+				"tiles", 0,
+				c*this.SIZE,r*this.SIZE,
+				this.SIZE, this.SIZE);
+			switch(this.cells[r][c].tipo) {
+				case "paredeInd":
+					images.drawTile(ctx,
+						"tiles", 1,
+						c*this.SIZE,r*this.SIZE,
+						this.SIZE, this.SIZE);
+					break;
+				case "paredeDest":
+					images.drawTile(ctx,
+						"tiles", 2,
+						c*this.SIZE,r*this.SIZE,
+						this.SIZE, this.SIZE);
+					break;
+				case "bomba":
+					//ctx.fillStyle = "grey";
+					//ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+					break;
+				case "vazio":
+					if(this.cells[r][c].tipoObjeto === "powerup") {
+						this.cells[r][c].objeto.desenhaPowerup(ctx, images);
+					}
+					break;
+			}
     }
   }
-  
+	
+	for(var i = this.animExplosion.length-1; i >= 0; i--) {
+    images.drawExplosion(ctx, this.animExplosion[i].imgkey, this.animExplosion[i].tipo,
+    this.SIZE*this.animExplosion[i].gx, this.SIZE*this.animExplosion[i].gy,
+    this.SIZE, this.SIZE
+  	);
+    this.animExplosion[i].duracao-=dt;
+    if(this.animExplosion[i].duracao < 0) {
+      this.animExplosion.splice(i,1);
+    }
+  }
   
 };
 
@@ -108,6 +122,7 @@ Map.prototype.spawnPowerupFixo = function(qtd) {
 		powerup.y = Math.floor(gy*map.SIZE + map.SIZE/2);
 		powerup.gx = gx;
 		powerup.gy = gy;
+		powerup.imgkey = "powerup";
 		//this.cells[gy][gx] += 0.1;
 		powerup.tipo = tipo;
 		this.cells[gy][gx].objeto = powerup;
