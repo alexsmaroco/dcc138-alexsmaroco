@@ -8,18 +8,13 @@ function Sprite(){
   this.SIZE = 16;
   this.pose = 0;
   this.frame = 0;
-  this.poses = [
-    {row: 11, col:1, frames:8, v: 4},
-    {row: 10, col:1, frames:8, v: 4},
-    {row: 9, col:1, frames:8, v: 4},
-    {row: 8, col:1, frames:8, v: 4},
-    {row: 11, col:0, frames:1, v: 4},
-  ];
+  this.poses = [];
   this.imgkey = "pc";
   this.cooldown = 1;
   this.bombs = [];
-  this.maxBombs = 3;
+  this.maxBombs = 1;
   this.power = 1;
+  this.speedBonus = 0;
 }
 
 Sprite.prototype.desenhar = function (ctx, images) {
@@ -43,6 +38,42 @@ Sprite.prototype.desenharSombra = function (ctx) {
 };
 
 Sprite.prototype.desenharPose = function (ctx, images) {
+	this.w = this.poses[this.pose].w;
+	this.h = this.poses[this.pose].h;
+  ctx.save();
+  if(this.imunidade > 0) {
+    ctx.globalAlpha = 0.5*Math.cos(60*this.imunidade);
+  }
+	ctx.translate(this.x, this.y);
+	images.drawFrame(ctx,
+    this.imgkey,
+    this.poses[this.pose].row,
+    Math.floor(this.frame),
+    -1*(this.poses[this.pose].w/2),-1*(this.poses[this.pose].h),
+	this.poses[this.pose].w, this.poses[this.pose].h,
+	this.poses[this.pose].w*1.3, this.poses[this.pose].h*1.3
+  );
+  ctx.restore();
+};
+
+Sprite.prototype.desenharInimigo = function(ctx, images) {
+	this.w = this.poses[this.pose].w;
+	this.h = this.poses[this.pose].h;
+	ctx.save();
+	ctx.translate(this.x, this.y);
+	images.drawFrame(ctx,
+    this.imgKey,
+    this.poses[this.pose].row,
+    Math.floor(this.frame),
+    30,25,
+	this.poses[this.pose].w, this.poses[this.pose].h,
+	this.poses[this.pose].w*1.5, this.poses[this.pose].h*1.5
+  );
+  ctx.restore();
+}
+
+/*
+Sprite.prototype.desenharPose = function (ctx, images) {
   ctx.save();
   ctx.translate(this.x, this.y);
   images.drawFrame(ctx,
@@ -53,7 +84,7 @@ Sprite.prototype.desenharPose = function (ctx, images) {
   );
   ctx.restore();
 };
-
+*/
 Sprite.prototype.desenharBomba = function(ctx) {
 	ctx.save();
 	ctx.translate(this.x, this.y);
@@ -77,6 +108,26 @@ Sprite.prototype.desenhaPowerup = function(ctx, images) {
     ctx.restore();
 }
 
+Sprite.prototype.desenhaExplosaoParede = function(ctx, images) {
+    this.frame+= 30*dt;
+    if(this.frame >= 16) this.frame = 16;
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    var F = Math.floor(this.frame);
+    ctx.drawImage(
+        images.images[this.imgkey],
+        (F%4)*64,
+        Math.floor(F/4)*64,
+        64,
+        64,
+        -this.w/2,
+        -this.h/2,
+        this.w,
+        this.h 
+    );
+    ctx.restore();
+}
+
 Sprite.prototype.mover = function (map, dt) {
   if(this.cooldown > 0)
     this.cooldown-=dt;
@@ -85,6 +136,11 @@ Sprite.prototype.mover = function (map, dt) {
 
   this.gx = Math.floor(this.x/map.SIZE);
   this.gy = Math.floor(this.y/map.SIZE);
+
+  if(map.cells[this.gy][this.gx].tipo == "lama") {
+    this.vx*=0.75;
+    this.vy*=0.75;
+  }
   
   // testa se pisou em powerup
   if(map.cells[this.gy][this.gx].tipoObjeto === "powerup") {
@@ -95,15 +151,18 @@ Sprite.prototype.mover = function (map, dt) {
       case 1:
         this.maxBombs++;
         break;
+      case 2:
+        this.speedBonus+=15;
+        break;
       default: console.log("Powerup com tipo errado!");
     }
     map.cells[this.gy][this.gx].objeto = null;
     map.cells[this.gy][this.gx].tipoObjeto = undefined;
   }
-  if(this.vx > 0 && map.cells[this.gy][this.gx+1].tipo != "vazio") {
+  if(this.vx > 0 && !map.cells[this.gy][this.gx+1].andavel) {
     this.x += Math.min((this.gx+1)*map.SIZE - (this.x+this.SIZE/2),this.vx*dt);
 	
-  } else if(this.vx < 0 && map.cells[this.gy][this.gx-1].tipo != "vazio"){
+  } else if(this.vx < 0 && !map.cells[this.gy][this.gx-1].andavel){
       this.x += Math.max((this.gx)*map.SIZE - (this.x-this.SIZE/2),this.vx*dt);
 
 	}
@@ -111,10 +170,10 @@ Sprite.prototype.mover = function (map, dt) {
     this.x = this.x + this.vx*dt;
   }
   
-  if(this.vy > 0 && map.cells[this.gy+1][this.gx].tipo != "vazio"){
+  if(this.vy > 0 && !map.cells[this.gy+1][this.gx].andavel){
     this.y += Math.min((this.gy+1)*map.SIZE - (this.y+this.SIZE/2),this.vy*dt);
 
-  } else if(this.vy < 0 && map.cells[this.gy-1][this.gx].tipo != "vazio"){
+  } else if(this.vy < 0 && !map.cells[this.gy-1][this.gx].andavel){
       this.y += Math.max((this.gy)*map.SIZE - (this.y-this.SIZE/2),this.vy*dt);
 	}
   else {
@@ -129,3 +188,18 @@ Sprite.prototype.mover = function (map, dt) {
   
 };
 
+Sprite.prototype.moverAI = function(map, dt) {
+	this.imunidade-=dt;
+	if(this.x != this.xdest || this.y != this.ydest) {
+		this.isMoving = true;
+		this.x+=(this.xdest-this.x < 0)?-1:1;
+		this.y+=(this.ydest-this.y < 0)?-1:1;
+		this.frame+=0.1;
+		if(this.frame > 2) {
+			this.frame = 0;
+		}
+	} else {
+		this.isMoving = false;
+		return;
+	}
+}
