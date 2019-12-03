@@ -39,9 +39,26 @@ Map.prototype.desenhar = function (ctx, images) {
 						c*this.SIZE,r*this.SIZE,
 						this.SIZE, this.SIZE);
 					break;
+				case "lama":
+						images.drawTile(ctx,
+							"tiles", 3,
+							c*this.SIZE,r*this.SIZE,
+							this.SIZE, this.SIZE);
+						break;
 				case "bomba":
-					//ctx.fillStyle = "grey";
-					//ctx.fillRect(c*this.SIZE, r*this.SIZE, this.SIZE, this.SIZE);
+					switch(this.cells[r][c].tipoOrig) {
+						case "lama":
+							images.drawTile(ctx,
+							"tiles", 3,
+							c*this.SIZE,r*this.SIZE,
+							this.SIZE, this.SIZE);
+							break;
+						case "vazio":
+							if(this.cells[r][c].tipoObjeto === "powerup") {
+								this.cells[r][c].objeto.desenhaPowerup(ctx, images);
+							}
+							break;
+					}
 					break;
 				case "vazio":
 					if(this.cells[r][c].tipoObjeto === "powerup") {
@@ -77,13 +94,16 @@ Map.prototype.setCells = function (newCells) {
     for (var j = 0; j < newCells[i].length; j++) {
       switch (newCells[i][j]) {
         case 1:
-          this.cells[i][j] = {tipo: "paredeInd", objeto: null, tipoObjeto: undefined}; // parede indestrutivel
+          this.cells[i][j] = {tipo: "paredeInd", objeto: null, tipoObjeto: undefined, andavel: false}; // parede indestrutivel
           break;
         case 2:
-          this.cells[i][j] = {tipo: "paredeDest", objeto: null, tipoObjeto: undefined}; // parede destrutivel
-          break;
+          this.cells[i][j] = {tipo: "paredeDest", objeto: null, tipoObjeto: undefined, andavel: false}; // parede destrutivel
+					break;
+				case 3:
+						this.cells[i][j] = {tipo: "lama", tipoOrig: "lama", objeto: null, tipoObjeto: undefined, andavel: true}; // terreno que causa lentidão
+						break;
         default:
-          this.cells[i][j] = {tipo: "vazio", objeto: null, tipoObjeto: undefined}; // vazio
+          this.cells[i][j] = {tipo: "vazio", tipoOrig: "vazio", objeto: null, tipoObjeto: undefined, andavel: true}; // vazio
       }
     }
   }
@@ -117,7 +137,7 @@ Map.prototype.spawnPowerup = function(dt) {
 // Funçao pra spawn um numero fixo de powerups
 Map.prototype.spawnPowerupFixo = function(qtd) {
 	for(var i = 0; i < qtd; i++) {
-		var tipo = Math.floor(Math.random()*2);
+		var tipo = Math.floor(Math.random()*3);
 		var gy = 0;
 		var gx = 0;
 		// busca local possivel

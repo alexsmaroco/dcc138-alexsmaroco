@@ -10,13 +10,14 @@ var frame = 0;
 var fim = false;
 var isMainMenu = true;
 var numPlayers = 2;
+var selectedOpt = 0;
 var explosionHandler = []; // suaviza explosoes em cadeia
 var explosionDelay = 0.1; // suaviza explosoes em cadeia
 
 function init(){
   canvas = document.getElementsByTagName('canvas')[0];
-  canvas.width = (13*40);
-  canvas.height = (13*40)+20;
+  canvas.width = (15*40);
+  canvas.height = (15*40)+20;
   ctx = canvas.getContext("2d");
   images = new ImageLoader();
 	images.load("pc", "assets/BombermanDSAlpha.png");
@@ -25,8 +26,71 @@ function init(){
 	images.load("powerups", "assets/Powerups.png");
 	images.load("MainMenuBG", "assets/MMenuBg.png");
 	images.load("expPar", "assets/exp2_0.png");
-  map = new Map(Math.floor(canvas.height/40), Math.floor(canvas.width/40));
-  //map.images = images;
+	images.load("MapMenuBG", "assets/MapMenu.png");
+	images.load("enemy", "assets/enemies.png");
+	
+	isMainMenu = true;
+  initControls();
+  requestAnimationFrame(mainMenu);
+}
+
+function gameStart() {
+	map = new Map(Math.floor(canvas.height/40), Math.floor(canvas.width/40));
+	//map.images = images;
+	
+	var tiles = [];
+	if(selectedOpt == 0) {
+		map.setCells([
+		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+		[1,0,0,2,2,2,2,2,2,2,2,2,2,2,1],
+		[1,0,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,0,1],
+		[1,2,2,2,2,2,2,2,2,2,2,2,0,0,1],
+		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+		]);
+		
+		tiles = [
+		{ox:3, oy:2, w:30, h:30 , frames:1},
+		{ox:37, oy:2, w:29, h:30 , frames:1},
+		{ox:70, oy:2, w:30, h:30 , frames:1},
+		];
+	}
+	 else {
+		map.setCells([
+		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+		[1,0,0,2,3,2,2,2,2,2,3,2,2,2,1],
+		[1,0,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,3,2,2,2,2,2,2,2,2,2,3,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,2,2,2,3,2,2,2,3,2,2,2,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,3,2,2,2,2,2,2,2,2,2,3,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+		[1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+		[1,2,1,2,1,2,1,2,1,2,1,2,1,0,1],
+		[1,2,2,2,3,2,2,2,2,2,3,2,0,0,1],
+		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+		]);
+		
+		tiles = [
+		{ox:104, oy:2, w:30, h:30 , frames:1},
+		{ox:269, oy:2, w:30, h:30 , frames:1},
+		{ox:236, oy:2, w:30, h:30 , frames:1},
+		{ox:201, oy:2, w:30, h:30 , frames:1},
+		];
+	 }
+	 /*
   map.setCells([
     [1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,0,0,2,2,2,2,2,2,2,2,2,1],
@@ -42,11 +106,8 @@ function init(){
     [1,2,2,2,2,2,2,2,2,2,0,0,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1],
 	]);
-	images.tileCut = [
-		{ox:3, oy:2, w:30, h:30 , frames:1},
-		{ox:37, oy:2, w:29, h:30 , frames:1},
-		{ox:70, oy:2, w:30, h:30 , frames:1},
-	];
+	*/
+	images.tileCut = tiles;
 	images.powerupCut = [
     {ox:4, oy:4, w:22, h:22 , frames:1},
     {ox:52, oy:4, w:22, h:22 , frames:1},
@@ -63,7 +124,7 @@ function init(){
     {ox:36, oy:1, w:16, h:16 , frames:1},
 	];
 
-  //map.cooldownPowerup = 5;
+  map.spawnPowerupFixo(15);
   pc1 = new Sprite();
   pc1.id = "1";
   pc1.x = 60;
@@ -71,7 +132,7 @@ function init(){
   pc1.vidas = 3;
   pc1.imunidade = 1;
 	pc1.imgkey = "pc";
-	pc1.power = 2;
+	pc1.power = 1;
 	pc1.poses = [
     {row: 0, col:0, w: 21.5, h:32 , frames:5, v: 8},
     {row: 1, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
@@ -79,23 +140,42 @@ function init(){
     {row: 3, col:0, w: 21.5, h:32 , frames:5, v: 8},
 	];
 
-  pc2 = new Sprite();
-  pc2.id = "2";
-  pc2.x = 460;
-  pc2.y = 380+80;
-  pc2.vidas = 3;
-  pc2.imunidade = 1;
-	pc2.imgkey = "pc";
-	pc2.poses = [
-    {row: 0, col:0, w: 21.5, h:32 , frames:5, v: 8},
-    {row: 1, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
-    {row: 2, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
-    {row: 3, col:0, w: 21.5, h:32 , frames:5, v: 8},
-	];
-	
-	isMainMenu = true;
-  initControls();
-  requestAnimationFrame(mainMenu);
+	if(numPlayers == 1) { // torna o player 2 em um inimigo
+		pc2 = new Sprite();
+		var enemyPoses = [
+		{row: 0, col:0, w: 18, h:18, frames:3, v: 8},
+		];
+		pc2.poses = enemyPoses;
+		pc2.gx = 13;
+		pc2.gy = 13;
+		pc2.x = pc2.gx*map.SIZE-map.SIZE/2;
+		pc2.y = pc2.gy*map.SIZE-map.SIZE/2;
+		pc2.speed = 75;
+		pc2.vidas = 10;
+		pc2.xdest = pc2.x;
+		pc2.ydest = pc2.y;
+		pc2.imunidade = 0;
+		pc2.imgKey = "enemy";
+		pc2.movCooldown = 2;
+		requestAnimationFrame(passo1P);
+	}
+	else if(numPlayers == 2) {
+		pc2 = new Sprite();
+		pc2.id = "2";
+		pc2.x = 460+80;
+		pc2.y = 380+160;
+		pc2.vidas = 3;
+		pc2.imunidade = 1;
+		pc2.imgkey = "pc";
+		pc2.poses = [
+			{row: 0, col:0, w: 21.5, h:32 , frames:5, v: 8},
+			{row: 1, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
+			{row: 2, col:0, w: 21.5, h:33.2 , frames:5, v: 8},
+			{row: 3, col:0, w: 21.5, h:32 , frames:5, v: 8},
+		];
+		requestAnimationFrame(passo2P);
+	}
+
 }
 
 function mainMenu(t) {
@@ -127,10 +207,119 @@ function mainMenu(t) {
 	anterior = t;
 }
 
+function mapSelection(t) {
+	dt = (t-anterior)/1000;
+	currentAnimation = requestAnimationFrame(mapSelection);
+	ctx.clearRect(0,0, canvas.width, canvas.height);
+	images.drawBG(ctx, "MapMenuBG", canvas.width, canvas.height);
+	ctx.fillText("P1: <WASD,Spacebar>   P2: <Setas,ENTER>", canvas.width/2, canvas.height-30);
+	ctx.save();
+	if(this.selectedOpt == 0) {
+		ctx.fillStyle = "yellow";
+		ctx.fillText("Mapa classico", canvas.width/2, canvas.height-80);
+	} else {
+		ctx.fillStyle = "black";
+	}
+	ctx.fillText("Mapa 1 - Castelo", 150, 100);
+	ctx.restore();
+	ctx.save();
+	if(this.selectedOpt == 1) {
+		ctx.fillStyle = "yellow";
+		ctx.fillText("Possui terreno que causa lentidao", canvas.width/2, canvas.height-80);
+	} else {
+		ctx.fillStyle = "black";
+	}
+	ctx.fillText("Mapa 2 - Floresta", 450, 100);
+	ctx.restore();
+	
+	anterior = t;
+}
 
-function passo(t){
+function passo1P(t) {
   dt = (t-anterior)/1000;
-  requestAnimationFrame(passo);
+  currentAnimation = requestAnimationFrame(passo1P);
+  ctx.clearRect(0,0, canvas.width, canvas.height);
+  if(!this.fim) {
+		// countdown das bombas
+		for (var i = pc1.bombs.length-1;i>=0; i--) {
+			pc1.bombs[i].timer-=dt;
+			if(pc1.bombs[i].timer < 0) {
+				explodir(pc1.bombs[i], map);
+				pc1.bombs.splice(i, 1);
+			}
+		}
+		explosionDelay-=dt;
+		if(explosionHandler.length > 0 && explosionDelay <= 0) {
+			var prox = explosionHandler.shift();
+			explodir(prox, map);
+			explosionDelay = 0.1;
+		}
+		// spawna powerups de tempos em tempos !! pode spawnar mais de um no mesmo lugar
+		//map.spawnPowerup(dt);
+		pc1.mover(map, dt);
+		AIMovement(map,pc2,dt);
+	}
+
+	map.desenhar(ctx, images);
+	pc1.desenhar(ctx, images);
+	pc2.desenharInimigo(ctx, images);
+  desenhaInfo1P(ctx);
+	anterior = t;
+}
+
+function AIMovement(map,c,dt) {
+	c.movCooldown-=dt;
+	if(c.movCooldown < 0) {
+		var gx = c.gx;
+		var gy = c.gy;
+		var sentido, direcao = 0;
+		var cont = 0;
+		while(!c.isMoving && cont < 10) {
+			direcao = Math.floor(Math.random()*8)%2; // eixo x ou y
+			sentido = Math.floor(Math.random()*8)%2; // sentido positivo ou negativo
+			if(direcao == 0) { // eixo x
+				if(sentido == 0) {
+					if(gx-1 >= 0 && map.cells[gy][gx-1].tipo != "paredeInd") {
+						c.gx = gx-1;
+						c.xdest = (c.gx*map.SIZE)-(map.SIZE/2);
+						c.isMoving = true;
+					}
+				} else {
+					if(gx+1 < map.cells[gy].length && map.cells[gy][gx+1].tipo != "paredeInd") {
+						c.gx = gx+1;
+						c.xdest = (c.gx*map.SIZE)-(map.SIZE/2);
+						c.isMoving = true;
+					}
+				}
+			} else { // eixo y
+				if(sentido == 0) {
+					if(gy-1 >= 0 && map.cells[gy-1][gx].tipo != "paredeInd") {
+						c.gy = gy-1;
+						c.ydest = (c.gy*map.SIZE)-(map.SIZE/2);
+						c.isMoving = true;
+					}
+				} else {
+					if(gy+1 < map.cells.length && map.cells[gy+1][gx].tipo != "paredeInd") {
+						c.gy = gy+1;
+						c.ydest = (c.gy*map.SIZE)-(map.SIZE/2);
+						c.isMoving = true;
+					}
+				}
+			}
+		}
+		c.movCooldown = 1;
+		cont++; // evita agarrar no loop por causa do random
+	}
+	c.moverAI(map,dt);
+	if(pc1.imunidade <= 0 && pc1.gx == c.gx && pc1.gy == c.gy) {
+		pc1.imunidade = 2;
+		pc1.vidas--;
+	}
+}
+
+function passo2P(t) {
+  dt = (t-anterior)/1000;
+  currentAnimation = requestAnimationFrame(passo2P);
   ctx.clearRect(0,0, canvas.width, canvas.height);
   if(!this.fim) {
 		// countdown das bombas
@@ -163,7 +352,7 @@ function passo(t){
 	map.desenhar(ctx, images);
 	pc1.desenhar(ctx, images);
 	pc2.desenhar(ctx, images);
-  desenhaInfo(ctx);
+  desenhaInfo2P(ctx);
 	anterior = t;
 }
 
@@ -198,13 +387,14 @@ function chainReaction(gy, gx) {
 
 function explodeParede(map, gy, gx) {
 	var expPar = new Sprite();
-					expPar.x = gx * map.SIZE + 20;
-					expPar.y = gy * map.SIZE + 20;
-					expPar.w = 64;
-					expPar.h = 64;
-					expPar.duracao = 0.25;
-					expPar.imgkey = "expPar";
-					map.paredeExplosion.push(expPar);
+	expPar.x = gx * map.SIZE + 20;
+	expPar.y = gy * map.SIZE + 20;
+	expPar.w = 64;
+	expPar.h = 64;
+	expPar.duracao = 0.25;
+	expPar.imgkey = "expPar";
+	map.paredeExplosion.push(expPar);
+	map.cells[gy][gx].andavel = true;
 }
 
 function explodir(bomb, map) {
@@ -218,7 +408,8 @@ function explodir(bomb, map) {
 	var atingiup2 = false;
 	
 	// tira bomba do grid, se for trata-la como parede
-	map.cells[gy][gx].tipo = "vazio";
+	map.cells[gy][gx].tipo = map.cells[gy][gx].tipoOrig;
+	map.cells[gy][gx].andavel = true;
 	queueExplosion(map, gx, gy, 0);
 	
 	// caso fique em cima da bomba
@@ -365,17 +556,34 @@ function dropBomb(player, map) {
 		bomb.timer = 2;
 		bomb.power = player.power;
 		map.cells[gy][gx].tipo = "bomba";
+		map.cells[gy][gx].andavel = false;
 		player.bombs.push(bomb);
 		player.cooldown = 0.2;
 	}
 }
 
-
-
-function desenhaInfo(ctx) {
+function desenhaInfo1P(ctx) {
   ctx.font = "15px Arial";
   ctx.fillStyle = "blue";
-  ctx.fillText("Player 1: " + pc1.vidas + " vida(s)       " + "Player 2: " + pc2.vidas + " vida(s)", this.canvas.width/2 - 100, 455+80);
+  ctx.fillText("Player 1: " + pc1.vidas + " vida(s)       " + "Inimigo: " + pc2.vidas + " vida(s)", this.canvas.width/2 - 50, 455+160);
+  if(pc1.vidas <= 0) {
+		ctx.font = "50px Arial";
+		ctx.fillStyle = "blue";
+		ctx.fillText("Você perdeu!", this.canvas.width/2 - 50, this.canvas.height/2);
+    this.fim = true;
+	}
+	if(pc2.vidas <= 0) {
+		ctx.font = "50px Arial";
+		ctx.fillStyle = "blue";
+		ctx.fillText("Você venceu!", this.canvas.width/2 - 50, this.canvas.height/2);
+    this.fim = true;
+	}
+}
+
+function desenhaInfo2P(ctx) {
+  ctx.font = "15px Arial";
+  ctx.fillStyle = "blue";
+  ctx.fillText("Player 1: " + pc1.vidas + " vida(s)       " + "Player 2: " + pc2.vidas + " vida(s)", this.canvas.width/2 - 100, 455+160);
   if(pc1.vidas <= 0) {
 	ctx.font = "50px Arial";
 	ctx.fillStyle = "blue";
@@ -384,8 +592,8 @@ function desenhaInfo(ctx) {
   }
   if(pc2.vidas <= 0) {
     ctx.font = "50px Arial";
-	ctx.fillStyle = "blue";
-	ctx.fillText("Player 1 venceu!", this.canvas.width/2 - 50, this.canvas.height/2);
+		ctx.fillStyle = "blue";
+		ctx.fillText("Player 1 venceu!", this.canvas.width/2 - 50, this.canvas.height/2);
     this.fim = true;
   }
 }
@@ -398,107 +606,190 @@ function initControls(){
 	}
 	else {
 		removeEventListener('keydown', menuControls);
+		if(numPlayers == 2) {
+			addEventListener('keydown', function(e){
+				switch (e.keyCode) {
+					// player 1
+					case 32:
+					dropBomb(pc1, map);
+					break;
+					case 65:
+							pc1.vx = -100 - pc1.speedBonus;
+							pc1.vy = 0;
+							pc1.pose = 3;
+							e.preventDefault();
+							break;
+						case 87:
+							pc1.vy = -100 - pc1.speedBonus;
+							pc1.vx = 0;
+							pc1.pose = 2;
+							e.preventDefault();
+							break;
+						case 68:
+							pc1.vx = 100 + pc1.speedBonus;
+							pc1.vy = 0;
+							pc1.pose = 1;
+							e.preventDefault();
+							break;
+						case 83:
+							pc1.vy = 100 + pc1.speedBonus;
+							pc1.vx = 0;
+							pc1.pose = 0;
+							e.preventDefault();
+							break;
+				
+					// player 2
+					case 13:
+					dropBomb(pc2, map);
+					break;
+						case 37:
+							pc2.vx = -100 - pc2.speedBonus;
+							pc2.vy = 0;
+							pc2.pose = 3;
+							e.preventDefault();
+							break;
+						case 38:
+							pc2.vy = -100 - pc2.speedBonus;
+							pc2.vx = 0;
+							pc2.pose = 2;
+							e.preventDefault();
+							break;
+						case 39:
+							pc2.vx = 100 + pc2.speedBonus;
+							pc2.vy = 0;
+							pc2.pose = 1;
+							e.preventDefault();
+							break;
+						case 40:
+							pc2.vy = 100 + pc2.speedBonus;
+							pc2.vx = 0;
+							pc2.pose = 0;
+							e.preventDefault();
+							break;
+						default:
+				}
+			});
+			addEventListener('keyup', function(e){
+				switch (e.keyCode) {
+				//player 1
+				case 65:
+						pc1.vx = 0;
+						break;
+					case 87:
+						pc1.vy = 0;
+						break;
+					case 68:
+						pc1.vx = 0;
+						break;
+					case 83:
+						pc1.vy = 0;
+						break;
+			
+				// player 2
+					case 37:
+				pc2.vx = 0;
+						break;
+					case 38:
+						pc2.vy = 0;
+						break;
+					case 39:
+						pc2.vx = 0;
+						break;
+					case 40:
+						pc2.vy = 0;
+						break;
+					default:
 
-		addEventListener('keydown', function(e){
-			switch (e.keyCode) {
+				}
+			});
+		} else {
+				addEventListener('keydown', function(e){
+					switch (e.keyCode) {
+						// player 1
+						case 32:
+							dropBomb(pc1, map);
+							break;
+						case 65:
+								pc1.vx = -100 - pc1.speedBonus;
+								pc1.vy = 0;
+								pc1.pose = 3;
+								e.preventDefault();
+								break;
+							case 87:
+								pc1.vy = -100 - pc1.speedBonus;
+								pc1.vx = 0;
+								pc1.pose = 2;
+								e.preventDefault();
+								break;
+							case 68:
+								pc1.vx = 100 + pc1.speedBonus;
+								pc1.vy = 0;
+								pc1.pose = 1;
+								e.preventDefault();
+								break;
+							case 83:
+								pc1.vy = 100 + pc1.speedBonus;
+								pc1.vx = 0;
+								pc1.pose = 0;
+								e.preventDefault();
+								break;
+							default:
+					}
+				});
+				addEventListener('keyup', function(e){
+					switch (e.keyCode) {
+					//player 1
+					case 65:
+							pc1.vx = 0;
+							break;
+						case 87:
+							pc1.vy = 0;
+							break;
+						case 68:
+							pc1.vx = 0;
+							break;
+						case 83:
+							pc1.vy = 0;
+							break;
+						default:
 
-			// player 1
-			case 32:
-			dropBomb(pc1, map);
-			break;
-			case 65:
-					pc1.vx = -100;
-					pc1.vy = 0;
-					pc1.pose = 3;
-					e.preventDefault();
-					break;
-				case 87:
-					pc1.vy = -100;
-					pc1.vx = 0;
-					pc1.pose = 2;
-					e.preventDefault();
-					break;
-				case 68:
-					pc1.vx = 100;
-					pc1.vy = 0;
-					pc1.pose = 1;
-					e.preventDefault();
-					break;
-				case 83:
-					pc1.vy = 100;
-					pc1.vx = 0;
-					pc1.pose = 0;
-					e.preventDefault();
-					break;
-		
-			// player 2
-			case 13:
-			dropBomb(pc2, map);
-			break;
-				case 37:
-					pc2.vx = -100;
-					pc2.vy = 0;
-					pc2.pose = 3;
-					e.preventDefault();
-					break;
-				case 38:
-					pc2.vy = -100;
-					pc2.vx = 0;
-					pc2.pose = 2;
-					e.preventDefault();
-					break;
-				case 39:
-					pc2.vx = 100;
-					pc2.vy = 0;
-					pc2.pose = 1;
-					e.preventDefault();
-					break;
-				case 40:
-					pc2.vy = 100;
-					pc2.vx = 0;
-					pc2.pose = 0;
-					e.preventDefault();
-					break;
-				default:
-
+					}
+				});
 			}
-		});
-		addEventListener('keyup', function(e){
-			switch (e.keyCode) {
-			//player 1
-			case 65:
-					pc1.vx = 0;
-					break;
-				case 87:
-					pc1.vy = 0;
-					break;
-				case 68:
-					pc1.vx = 0;
-					break;
-				case 83:
-					pc1.vy = 0;
-					break;
-		
-			// player 2
-				case 37:
-			pc2.vx = 0;
-					break;
-				case 38:
-					pc2.vy = 0;
-					break;
-				case 39:
-					pc2.vx = 0;
-					break;
-				case 40:
-					pc2.vy = 0;
-					break;
-				default:
-
-			}
-		});
 	}
 }
 
+function menuControls(e) {
+	switch(e.keyCode) {
+		case 13:
+			if(this.isMainMenu) {
+				cancelAnimationFrame(currentAnimation);
+				currentAnimation = requestAnimationFrame(mapSelection);
+				this.isMainMenu = false;
+				break;
+			} else {
+				cancelAnimationFrame(currentAnimation);
+				initControls();
+				gameStart();
+				//currentAnimation = requestAnimationFrame(passo);
+			}
+			break;
+		case 37:
+			this.selectedOpt = 0;
+			break;
+		case 39:
+			this.selectedOpt = 1;
+			break;
+		case 38:
+			if(this.isMainMenu) this.numPlayers = 1;
+			break;
+		case 40:
+			if(this.isMainMenu) this.numPlayers = 2;
+			break;
+	}
+}
+
+/*
 function menuControls(e) {
 	switch(e.keyCode) {
 		case 13:
@@ -513,3 +804,4 @@ function menuControls(e) {
 			break;
 	}
 }
+*/

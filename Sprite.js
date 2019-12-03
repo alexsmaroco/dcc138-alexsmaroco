@@ -12,8 +12,9 @@ function Sprite(){
   this.imgkey = "pc";
   this.cooldown = 1;
   this.bombs = [];
-  this.maxBombs = 3;
+  this.maxBombs = 1;
   this.power = 1;
+  this.speedBonus = 0;
 }
 
 Sprite.prototype.desenhar = function (ctx, images) {
@@ -54,6 +55,22 @@ Sprite.prototype.desenharPose = function (ctx, images) {
   );
   ctx.restore();
 };
+
+Sprite.prototype.desenharInimigo = function(ctx, images) {
+	this.w = this.poses[this.pose].w;
+	this.h = this.poses[this.pose].h;
+	ctx.save();
+	ctx.translate(this.x, this.y);
+	images.drawFrame(ctx,
+    this.imgKey,
+    this.poses[this.pose].row,
+    Math.floor(this.frame),
+    30,25,
+	this.poses[this.pose].w, this.poses[this.pose].h,
+	this.poses[this.pose].w*1.5, this.poses[this.pose].h*1.5
+  );
+  ctx.restore();
+}
 
 /*
 Sprite.prototype.desenharPose = function (ctx, images) {
@@ -119,6 +136,11 @@ Sprite.prototype.mover = function (map, dt) {
 
   this.gx = Math.floor(this.x/map.SIZE);
   this.gy = Math.floor(this.y/map.SIZE);
+
+  if(map.cells[this.gy][this.gx].tipo == "lama") {
+    this.vx*=0.75;
+    this.vy*=0.75;
+  }
   
   // testa se pisou em powerup
   if(map.cells[this.gy][this.gx].tipoObjeto === "powerup") {
@@ -129,15 +151,18 @@ Sprite.prototype.mover = function (map, dt) {
       case 1:
         this.maxBombs++;
         break;
+      case 2:
+        this.speedBonus+=15;
+        break;
       default: console.log("Powerup com tipo errado!");
     }
     map.cells[this.gy][this.gx].objeto = null;
     map.cells[this.gy][this.gx].tipoObjeto = undefined;
   }
-  if(this.vx > 0 && map.cells[this.gy][this.gx+1].tipo != "vazio") {
+  if(this.vx > 0 && !map.cells[this.gy][this.gx+1].andavel) {
     this.x += Math.min((this.gx+1)*map.SIZE - (this.x+this.SIZE/2),this.vx*dt);
 	
-  } else if(this.vx < 0 && map.cells[this.gy][this.gx-1].tipo != "vazio"){
+  } else if(this.vx < 0 && !map.cells[this.gy][this.gx-1].andavel){
       this.x += Math.max((this.gx)*map.SIZE - (this.x-this.SIZE/2),this.vx*dt);
 
 	}
@@ -145,10 +170,10 @@ Sprite.prototype.mover = function (map, dt) {
     this.x = this.x + this.vx*dt;
   }
   
-  if(this.vy > 0 && map.cells[this.gy+1][this.gx].tipo != "vazio"){
+  if(this.vy > 0 && !map.cells[this.gy+1][this.gx].andavel){
     this.y += Math.min((this.gy+1)*map.SIZE - (this.y+this.SIZE/2),this.vy*dt);
 
-  } else if(this.vy < 0 && map.cells[this.gy-1][this.gx].tipo != "vazio"){
+  } else if(this.vy < 0 && !map.cells[this.gy-1][this.gx].andavel){
       this.y += Math.max((this.gy)*map.SIZE - (this.y-this.SIZE/2),this.vy*dt);
 	}
   else {
@@ -163,3 +188,18 @@ Sprite.prototype.mover = function (map, dt) {
   
 };
 
+Sprite.prototype.moverAI = function(map, dt) {
+	this.imunidade-=dt;
+	if(this.x != this.xdest || this.y != this.ydest) {
+		this.isMoving = true;
+		this.x+=(this.xdest-this.x < 0)?-1:1;
+		this.y+=(this.ydest-this.y < 0)?-1:1;
+		this.frame+=0.1;
+		if(this.frame > 2) {
+			this.frame = 0;
+		}
+	} else {
+		this.isMoving = false;
+		return;
+	}
+}
